@@ -1,0 +1,64 @@
+@import 'extensions.scss';
+
+$menu-base-zindex: 2001;
+
+
+.gdo {
+    &-button {
+        &-scroll {
+            height: 2rem;
+            font-family: MiddleAges;
+            font-size: 1.25rem;
+        }
+    }
+
+    &-menubar {
+        @extend .flex-centered-top;
+        z-index: $menu-base-zindex;
+
+        &-item {
+            @extend .flex-vertical;
+            min-height: 2rem;
+            z-index: calc($menu-base-zindex + 1);
+
+            &:hover {
+                z-index: calc($menu-base-zindex + 2);
+            }
+        }
+
+        &-submenu {
+            @extend .flex-vertical;
+
+            &-item {
+                min-height: 2rem;
+                padding: .5rem;
+                background-color: var(--surface-700);
+                text-align: center;
+                font-family: MiddleAges;
+                transition: all 0.5s ease;
+                z-index: calc($menu-base-zindex + 3);
+
+                &:hover {
+                    //background-color: var(--surface-800);
+                    color: white;
+                    text-shadow: 0 0 4px RGBA(50, 50, 150, 0.7);
+                    box-shadow: var(--primary-glow);
+                    z-index: calc($menu-base-zindex + 4);
+                }
+            }
+
+            /* &:after {
+                content: '';
+                position: absolute;
+                left: 50%;
+                bottom: -10px; 
+                width: 0;
+                height: 0;
+                border-left: 10px solid transparent;  
+                border-right: 10px solid transparent; 
+                border-top: 10px solid #333;          
+                transform: translateX(-50%); 
+            } */
+        }
+    }
+}

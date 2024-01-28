@@ -1,0 +1,23 @@
+<div class="gdo-menubar">
+    <ng-container *ngFor="let item of model$ | async">
+        <div class="gdo-menubar-item">
+            <button 
+                type="button" 
+                class="gdo-button-scroll"
+                [attr.aria-expanded]="!item.isCollapsed"
+                aria-controls="collapseBasic"
+            >
+                {{item.label}}
+            </button>
+
+            <div id="collapseBasic" [collapse]="item.isCollapsed" [isAnimated]="true">
+                <div class="gdo-menubar-submenu">
+                    <ng-container *ngFor="let subItem of item.items">
+                        <span class="gdo-menubar-submenu-item">{{subItem.label}}</span>
+                    </ng-container>
+                    <gdo-svg></gdo-svg>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</div>
