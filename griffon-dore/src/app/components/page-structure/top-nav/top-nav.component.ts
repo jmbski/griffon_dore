@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, TemplateRef } from '@angular/core';
-import { ANGULAR_COMMON } from '@app/common';
+import { ANGULAR_COMMON, AppDeviceInfo, UseMobile } from '@app/common';
 import { NavLogoComponent } from '../nav-logo/nav-logo.component';
 import { MenubarModule } from 'primeng/menubar';
 import { MenuItem } from 'primeng/api';
@@ -73,98 +73,108 @@ export class TopNavComponent {
     constructor(
         public cd: ChangeDetectorRef,
     ) {
+        const menuItems: WSMenuItem[] = [
+            {
+                label: 'About',
+                isExpanded: false,
+                items: [
+                    {
+                        label: 'Our Story',
+                    },
+                    {
+                        label: 'Mission & Values',
+                    },
+                    {
+                        label: 'Meet The Members',
+                    }
+                ]
+            },
+            {
+                label: 'Historical Insights',
+                isExpanded: false,
+                items: [
+                    {
+                        label: 'Life in the Hundred Years\' War',
+                    },
+                    {
+                        label: 'Weapons & Warfare',
+                    },
+                    {
+                        label: 'Fashion & Culture',
+                    }
+                ]
+            },
+            {
+                label: 'Events',
+                isExpanded: false,
+                items: [
+                    {
+                        label: 'Event Calendar',
+                    },
+                    {
+                        label: 'Upcoming Events',
+                    },
+                    {
+                        label: 'Past Events',
+                    },
+                ]
+            },
+            {
+                label: 'Resources',
+                isExpanded: false,
+                items: [
+                    {
+                        label: 'Research Library',
+                    },
+                    {
+                        label: 'Educational Materials',
+                    },
+                    {
+                        label: 'Historical Recipes',
+                    },
+                    {
+                        label: 'Historical Games',
+                    },
+                    {
+                        label: 'External Links',
+                    },
+                    {
+                        label: 'Tutorials'
+                    }
+                ]
+            },
+            {
+                label: 'Contact Us',
+                isExpanded: false,
+                items: [
+                    {
+                        label: 'Contact Information',
+                    },
+                    {
+                        label: 'Books Us For An Event',
+                    },
+                    {
+                        label: 'Volunteer Opportunities',
+                    },
+                    {
+                        label: 'Join Our Mailing List',
+                    },
+                    {
+                        label: 'Donate',
+                    },
+                    {
+                        label: 'Heed The Clarion Call (Join)'
+                    }
+                ]
+            }
+        ];
+
         this.model = [
             {
-                label: 'Test',
-                isCollapsed: true,
-                items: [
-                    {
-                        label: 'Test.A',
-                        isCollapsed: true,
-                        items: [
-                            {
-                                label: 'Test.A.A',
-                                isCollapsed: true,
-                                items: [
-                                    {
-                                        label: 'Test.A.A.A',
-                                        isCollapsed: true,
-                                    },
-                                    {
-                                        label: 'Test.A.A.B',
-                                        isCollapsed: true,
-                                    },
-                                    {
-                                        label: 'Test.A.A.C',
-                                        isCollapsed: true,
-                                    },
-                                ]
-                            },
-                            {
-                                label: 'Test.A.B',
-                                isCollapsed: true,
-                            },
-                            {
-                                label: 'Test.A.C',
-                                isCollapsed: true,
-                            },
-                        ]
-    
-                    },
-                    {
-                        label: 'Test.B',
-                        isCollapsed: true,
-    
-                    },
-                    {
-                        label: 'Test.C',
-                        isCollapsed: true,
-    
-                    },
-                ]
-            },
-            {
-                label: 'TestB',
-                isCollapsed: true,
-                items: [
-                    {
-                        label: 'TestB.A',
-                        isCollapsed: true,
-    
-                    },
-                    {
-                        label: 'TestB.B',
-                        isCollapsed: true,
-    
-                    },
-                    {
-                        label: 'TestB.C',
-                        isCollapsed: true,
-    
-                    },
-                ]
-            },
-            {
-                label: 'TestC',
-                isCollapsed: true,
-                items: [
-                    {
-                        label: 'TestC.A',
-                        isCollapsed: true,
-    
-                    },
-                    {
-                        label: 'TestC.B',
-                        isCollapsed: true,
-    
-                    },
-                    {
-                        label: 'TestC.C',
-                        isCollapsed: true,
-    
-                    },
-                ]
-            },
+                label: 'Menu',
+                items: menuItems,
+                isExpanded: false,
+            }
         ];
     }
     

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, afterNextRender } from '@angular/core';
+import { ChangeDetectorRef, Component, afterNextRender } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { AppDeviceInfo, PRIME_COMMON } from '@app/common';
+import { AppDeviceInfo, GlobalResizeObserver, PRIME_COMMON } from '@app/common';
 import { BlockableUiComponent, PullToRefreshComponent } from '@app/components';
 import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { AutomatedStylingService } from './services/automated-styling/automated-styling.service';
@@ -24,17 +24,41 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 export class AppComponent {
     title = 'griffon-dore';
 
+    public resizeObserver?: ResizeObserver;
+
     constructor(
+        private cd: ChangeDetectorRef,
         private primengConfig: PrimeNGConfig,
         private deviceDetector: DeviceDetectorService,
         private automatedStylingService: AutomatedStylingService,
     ) {
         
+        //AppDeviceInfo.isDesktop = this.deviceDetector.isDesktop();
+        AppDeviceInfo.isMobile = this.deviceDetector.isMobile();
+        AppDeviceInfo.isTablet = this.deviceDetector.isTablet();
         afterNextRender(() => {
             console.log(this.deviceDetector.getDeviceInfo());
-            AppDeviceInfo.isDesktop = this.deviceDetector.isDesktop();
-            AppDeviceInfo.isMobile = this.deviceDetector.isMobile();
-            AppDeviceInfo.isTablet = this.deviceDetector.isTablet();
+
+            this.resizeObserver = new ResizeObserver((data: ResizeObserverEntry[]) => {
+                const width: number = data[0].contentRect.width;
+                const height: number = data[0].contentRect.height;
+            
+                if (width <= 761 || height <= 600) {
+                    AppDeviceInfo.isMobile = true;
+                }
+                else {
+                    AppDeviceInfo.isMobile = false;
+                }
+                const appTopNav: HTMLElement = <HTMLElement>document.querySelector('.app-top-nav');
+                const appTopNavShadow: HTMLElement = <HTMLElement>document.querySelector('.app-top-nav-shadow');
+                appTopNavShadow.style.height = `${appTopNav.offsetHeight}px`;
+                this.cd.detectChanges();
+            });
+            const appTopNav: HTMLElement = <HTMLElement>document.querySelector('.app-top-nav');
+            const appTopNavShadow: HTMLElement = <HTMLElement>document.querySelector('.app-top-nav-shadow');
+            appTopNavShadow.style.height = `${appTopNav.offsetHeight}px`;
+            this.resizeObserver.observe(document.body);
+            GlobalResizeObserver.next(this.resizeObserver);
             
         });
     }

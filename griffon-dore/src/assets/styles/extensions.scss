@@ -12,7 +12,11 @@
 }
 
 .flex-vertical {
-    @include styleclass('flex flex-column');
+    @include styleclass('flex flex-column w-full relative');
+}
+
+.flex-vertical-no-width {
+    @include styleclass('flex flex-column relative');
 }
 
 .flex-spread {
@@ -21,4 +25,8 @@
 
 .flex-around {
     @include styleclass('flex flex-row justify-content-around align-items-center w-full relative');
+}
+
+.flex-even-start {
+    @include styleclass('flex flex-row w-full');
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { StandardObject, WSMenuItem } from '@app/models';
+import { RecordObject, WSMenuItem } from '@app/models';
 
 @Injectable({
     providedIn: 'root',
@@ -49,31 +49,7 @@ export class Utils {
         return num;
     }
     
-    /**
-     * Checks if the input is a string indexed object.
-     * 
-     * @param input- The value to check if it is a string indexed object
-     * @returns true if the input is a string indexed object, false otherwise
-     */
-    public static IsStringIndexedObject(input: unknown): input is StandardObject {
-        return typeof input === 'object' && input != null && !Array.isArray(input) && Object.keys(input).every(key => typeof key === 'string');
-    }
-
-    /**
-     * Checks if the input is numeric.
-     * 
-     * @param input - The value to check if it is numeric
-     * @returns true if the input is numeric, false otherwise 
-     */
-    public static isNumeric(input: unknown): boolean {
-        if(typeof input === 'number') {
-            return true;
-        }
-        if(typeof input === 'string') {
-            return !isNaN(parseFloat(input));
-        }
-        return false;
-    }
+    
 
     /**
      * Retrieves an element from the DOM, either by the element itself or by a query selector string. If the element is not found, 

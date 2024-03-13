@@ -1,10 +1,13 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, afterNextRender } from '@angular/core';
-import { ANGULAR_COMMON, AppDeviceInfo } from '@app/common';
+import { ANGULAR_COMMON, AppDeviceInfo, UseMobile } from '@app/common';
 import { WSMenuItem } from '@app/models';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { NgStyleValues } from 'src/app/models/styles';
 import { SvgComponent } from '../svg/svg.component';
+import { DeviceDetectorService } from 'ngx-device-detector';
+import { MenubarModule } from 'primeng/menubar';
+import { MenuItem } from 'primeng/api';
 
 
 export interface MenuBarConfig {
@@ -26,6 +29,7 @@ export interface MenuBarConfig {
     imports: [
         CollapseModule,
         SvgComponent,
+        MenubarModule,
         ...ANGULAR_COMMON
     ],
     templateUrl: './menu-bar.component.html',
@@ -41,6 +45,12 @@ export class MenuBarComponent {
 
     public modelElementMap: Map<HTMLElement, WSMenuItem> = new Map<HTMLElement, WSMenuItem>();
 
+    public useMobile: boolean = UseMobile();
+
+    public showMenu: boolean = false;
+
+    public mobileCollapsed: boolean = true;
+
     // #endregion public properties
     
     
@@ -50,7 +60,9 @@ export class MenuBarComponent {
     
     
     // #region getters/setters
-    
+    get barModel() {
+        return <MenuItem[]>this.model$.getValue();
+    }
     // #endregion getters/setters
     
     
@@ -65,8 +77,13 @@ export class MenuBarComponent {
         return this._model;
     }
     set model(input: WSMenuItem[]) {
-        this._model = input;
-        this.model$.next(input);
+        if(UseMobile()) {
+            this._model = input;
+        }
+        else {
+            this._model = input[0]?.items || [];
+        }
+        this.model$.next(this._model);
     }
     
     // #endregion get/set inputs
@@ -87,43 +104,61 @@ export class MenuBarComponent {
         public cd: ChangeDetectorRef,
         public el: ElementRef,
     ) {
+        this.useMobile = UseMobile();
+        
         afterNextRender(() => {
+            this.showMenu = true;
+            this.cd.detectChanges();
             const element: HTMLElement = this.el.nativeElement;
 
             const models = this.model;
+            
             const cd = this.cd;
-            const gdoMenuItems: HTMLElement[] = Array.from(element.querySelectorAll('.gdo-menubar-item'));
+            if(!this.useMobile) {
+                const gdoMenuItems: HTMLElement[] = Array.from(element.querySelectorAll('.gdo-menubar-item'));
+                
+                gdoMenuItems.forEach((gdoMenuItem: HTMLElement, index: number) => {
+                    this.modelElementMap.set(gdoMenuItem, models[index]);
+                });
 
-            gdoMenuItems.forEach((gdoMenuItem: HTMLElement, index: number) => {
-                this.modelElementMap.set(gdoMenuItem, models[index]);
-            });
+                gdoMenuItems.forEach((gdoMenuItem: HTMLElement, index: number) => {
+                    const model = models[index];
+                    const subMenuItems: HTMLElement[] = <HTMLElement[]>Array.from(gdoMenuItem.getElementsByClassName('gdo-menubar-submenu'));
+                    subMenuItems.forEach((subMenuItem: HTMLElement) => {
+                        subMenuItem.style.maxWidth = `${gdoMenuItem.offsetWidth}px`;
+                    });
+                    gdoMenuItem.addEventListener('mouseenter', () => {
+                        model.isExpanded = true;
+                        cd.detectChanges();
+                    });
+        
+                    gdoMenuItem.addEventListener('mouseleave', () => {
+                        model.isExpanded = false;
+                        cd.detectChanges();
+                    });
+                });
+            }
+
+            this.showMenu = true;
+            this.cd.detectChanges();
+
 
             /* const { isDesktop, isMobile, isTablet } = AppDeviceInfo;
             console.log(AppDeviceInfo); */
             //if(isDesktop) {
-            gdoMenuItems.forEach((gdoMenuItem: HTMLElement, index: number) => {
-                const model = models[index];
-                    
-                gdoMenuItem.addEventListener('mouseenter', () => {
-                    model.isCollapsed = false;
-                    cd.detectChanges();
-                });
-    
-                gdoMenuItem.addEventListener('mouseleave', () => {
-                    model.isCollapsed = true;
-                    cd.detectChanges();
-                });
-            });
             //}
 
-            document.body.addEventListener('touchstart', (event: TouchEvent) => {
+            /* document.body.addEventListener('touchstart', (event: TouchEvent) => {
                 const menuRootElement = (<HTMLElement>event.target).closest('.gdo-menubar-item');
+                console.log('touch event', event);
+                console.log('touch event target', event.target);
+                console.log('touches', event.targetTouches);
                 if(!menuRootElement) {
 
                     if(this.activeMenuElement) {
                         const activeModel = this.modelElementMap.get(this.activeMenuElement);
                         if(activeModel) {
-                            activeModel.isCollapsed = true;
+                            activeModel.isExpanded = false;
                             cd.detectChanges();
                         }
                     }
@@ -136,7 +171,7 @@ export class MenuBarComponent {
                             if(this.activeMenuElement) {
                                 const activeModel = this.modelElementMap.get(this.activeMenuElement);
                                 if(activeModel) {
-                                    activeModel.isCollapsed = true;
+                                    activeModel.isExpanded = true;
                                     cd.detectChanges();
                                 }
                             }
@@ -145,7 +180,7 @@ export class MenuBarComponent {
                         }
                     }
                 }
-            });
+            }); */
             
         });
     }
@@ -154,6 +189,34 @@ export class MenuBarComponent {
     
     
     // #region public methods
+
+    /* public handleItemClick(itemElement: HTMLElement) {
+        const model = this.modelElementMap.get(itemElement);
+        
+        if(model) {
+            if(this.useMobile) {
+                model.isExpanded = !model.isExpanded;
+            }
+            this.cd.detectChanges();
+        }
+    } */
+
+    public handleItemClick(model: WSMenuItem) {
+        
+        
+        if(model) {
+            model.isExpanded = !model.isExpanded;
+            if(model.isExpanded || model.label === 'Menu') {
+                this.model[0]?.items?.forEach((menuItem) => {
+                    if(menuItem !== model) {
+                        menuItem.isExpanded = false;
+                    }
+                });
+            
+            }
+            this.cd.detectChanges();
+        }
+    }
     
     // #endregion public methods
     

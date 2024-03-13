@@ -40,7 +40,7 @@ export class SvgComponent {
     @Input() pointsList: string[] = [
         '0,0',
         '96,0',
-        '48,48',
+        '48,24',
         '0,0'
     ];
     
@@ -76,7 +76,7 @@ export class SvgComponent {
         private el: ElementRef,
         private cd: ChangeDetectorRef
     ) {
-        afterNextRender(() => {
+        /* afterNextRender(() => {
             if(this.el?.nativeElement) {
                 const element: HTMLElement = this.el.nativeElement;
                 const rootElement = element.closest('.gdo-menubar-item');
@@ -90,7 +90,7 @@ export class SvgComponent {
     
             }
 
-        });
+        }); */
     }
     
     // #endregion constructor and lifecycle hooks

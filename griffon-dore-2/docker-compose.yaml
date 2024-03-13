@@ -1,0 +1,25 @@
+version: '3'
+services:
+  frontend:
+    container_name: griffon-ng
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: griffon-ng
+    volumes:
+      - griffon-index:/html/
+    
+
+volumes:
+  griffon-index:
+
+  
+#  backend:
+#    build:
+#      context: ./backend
+#      dockerfile: Dockerfile
+#    ports:
+#      - 5000:5000
+#    environment:
+#      - FLASK_APP=app.py
+#      - FLASK_RUN_HOST=0.0.0.0

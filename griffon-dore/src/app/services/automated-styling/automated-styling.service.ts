@@ -2,6 +2,7 @@ import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Utils } from '../utils/utils';
 import { ElementConfig } from '@app/models';
+import { IsNumeric } from '@app/common';
 
 @Injectable({
     providedIn: 'root'
@@ -64,7 +65,7 @@ export class AutomatedStylingService {
                                     const parent: HTMLElement | null = button.parentElement;
                                     if(parent) {
                                         const zindex = getComputedStyle(parent).getPropertyValue('z-index');
-                                        if(Utils.isNumeric(zindex)) {
+                                        if(IsNumeric(zindex)) {
                                             button.style.zIndex = `${parseInt(zindex) + 1}`;
                                         }
                                     }
@@ -104,7 +105,7 @@ export class AutomatedStylingService {
                 baseZIndex = getComputedStyle(baseElement).getPropertyValue('z-index');
             }
 
-            if(Utils.isNumeric(baseZIndex)) {
+            if(IsNumeric(baseZIndex)) {
                 const baseZIndexNum = typeof baseZIndex === 'string' ? parseInt(baseZIndex) : baseZIndex;
                 baseElement.style.zIndex = `${baseZIndexNum}`;
 
@@ -145,7 +146,7 @@ export class AutomatedStylingService {
 
             if(!baseZIndexNum) {
                 const elementZIndexStr = getComputedStyle(element).getPropertyValue('z-index');
-                if(Utils.isNumeric(elementZIndexStr)) {
+                if(IsNumeric(elementZIndexStr)) {
                     elementZIndex = parseInt(elementZIndexStr);
                 }
             }
